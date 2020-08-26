@@ -6,6 +6,12 @@ var repoSearchTerm = document.querySelector("#repo-search-term");
 
 // display repos
 var displayRepos = function(repos, searchTerm) {
+    // check if api returned any repos
+    if (repos.length === 0) {
+        repoContainerEl.textContent = "No repositories found.";
+        return;
+    }
+    
     console.log(repos);
     console.log(searchTerm);
 
@@ -72,9 +78,19 @@ var getUserRepos = function(user) {
 
     // make a request to the url
     fetch(apiUrl).then(function(response) {
-        response.json().then(function(data) {
+        // request was successful
+        if (response.ok) {
+          response.json().then(function(data) {
             displayRepos(data, user);
         });
+        } 
+        else {
+          alert("Error: " + response.statusText);
+        }
+    })
+    .catch(function(error) {
+        // Notice this '.catch()' getting chained onto the end of the '.then()'
+        alert("Unable to connect to GitHub");
     });
 };
 
